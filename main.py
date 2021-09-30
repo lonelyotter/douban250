@@ -29,7 +29,7 @@ Please replace this string with your own headers.
     for i in range(10):
         r = requests.get(url+str(i*25), headers=headers,
                          timeout=10)
-        print(r.text)
+
         soup = BeautifulSoup(r.text, 'lxml')
         div_list = soup.find_all('div', class_='info')
         for each in div_list:
