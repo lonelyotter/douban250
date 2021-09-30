@@ -22,6 +22,7 @@ if __name__ == '__main__':
     url = "https://movie.douban.com/top250?start="
     header_str = '''
 Please replace this string with your own headers.
+Make sure the value of 'Accept-Encoding' is 'gzip'
 '''
     headers = str2dict(header_str, '\n', ': ')
 
@@ -33,8 +34,10 @@ Please replace this string with your own headers.
         soup = BeautifulSoup(r.text, 'lxml')
         div_list = soup.find_all('div', class_='info')
         for each in div_list:
+
             title = each.find('div', class_='hd').a.span.text.strip()
-            print(title)
+            director = each.find('div', class_='bd').p.text.split('\n')[
+                1].strip().split(':')[1].strip().split('\xa0')[0]
             year = each.find('div', class_='bd').p.text.split('\n')[
                 2].strip().split('/')[0]
             country = each.find('div', class_='bd').p.text.split('\n')[
@@ -42,8 +45,8 @@ Please replace this string with your own headers.
             label = each.find('div', class_='bd').p.text.split('\n')[
                 2].strip().split('/')[-1]
             rating = each.find('span', class_='rating_num').text.strip()
-            movie_list.append([title, year, country, label, rating])
+            movie_list.append([title, director, year, country, label, rating])
 
     df = pandas.DataFrame(movie_list, columns=[
-                          '电影名称', '年份', '国家', '标签', '评分'], index=None)
+                          '电影名称', '导演', '年份', '国家', '标签', '评分'], index=range(1, 251))
     df.to_csv("douban250.csv")
